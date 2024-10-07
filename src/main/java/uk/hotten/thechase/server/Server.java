@@ -1,5 +1,6 @@
 package uk.hotten.thechase.server;
 
+import uk.hotten.thechase.MessageType;
 import uk.hotten.thechase.Utils;
 
 import java.io.DataOutputStream;
@@ -24,13 +25,13 @@ public class Server {
                 chaser = ss.accept();
                 chaserStream = new DataOutputStream(chaser.getOutputStream());
                 Utils.print("Chaser is connected.");
-                chaserStream.writeUTF("Welcome. Please wait.");
-                chaserStream.flush();
+                sendToChaser(MessageType.TEXT, "Welcome. Please wait.");
                 new ServerConnectionThread(chaser).start();
             } else {
                 player = ss.accept();
                 playerStream = new DataOutputStream(player.getOutputStream());
                 Utils.print("Player is connected.");
+                sendToPlayer(MessageType.TEXT, "Welcome. Please wait.");
                 new ServerConnectionThread(player).start();
             }
         }
@@ -42,15 +43,28 @@ public class Server {
 
     }
 
-    private static void sendToAll(String message) {
+    private static void sendToChaser(MessageType type, String message) {
         try {
+            chaserStream.writeInt(type.id);
             chaserStream.writeUTF(message);
-            playerStream.writeUTF(message);
             chaserStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void sendToPlayer(MessageType type, String message) {
+        try {
+            playerStream.writeInt(type.id);
+            playerStream.writeUTF(message);
             playerStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    private static void sendToAll(MessageType type, String message) {
+        sendToChaser(type, message);
+        sendToPlayer(type, message);
     }
 }
