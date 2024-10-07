@@ -1,4 +1,4 @@
-package uk.hotten.thechase;
+package uk.hotten.thechase.utils;
 
 public class Utils {
 

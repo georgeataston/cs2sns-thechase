@@ -1,4 +1,7 @@
-package uk.hotten.thechase;
+package uk.hotten.thechase.utils;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum MessageType {
 
@@ -17,6 +20,12 @@ public enum MessageType {
 
     private MessageType(int id) {
         this.id = id;
+    }
+
+    public static Optional<MessageType> valueOf(int value) {
+        return Arrays.stream(values())
+                .filter(msgId -> msgId.id == value)
+                .findFirst();
     }
 
 }

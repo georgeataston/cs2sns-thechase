@@ -1,7 +1,8 @@
 package uk.hotten.thechase.server;
 
-import uk.hotten.thechase.MessageType;
-import uk.hotten.thechase.Utils;
+import uk.hotten.thechase.utils.MessageType;
+import uk.hotten.thechase.utils.Utils;
+import uk.hotten.thechase.utils.QuestionData;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,7 +17,10 @@ public class Server {
     private static Socket player;
     private static DataOutputStream playerStream;
 
+    public static GameRound currentRound;
+
     public static void main(String[] args) throws IOException {
+        Utils.print("Starting server...");
         ServerSocket ss = new ServerSocket(17777);
 
         Utils.print("Awaiting connections.");
@@ -25,14 +29,14 @@ public class Server {
                 chaser = ss.accept();
                 chaserStream = new DataOutputStream(chaser.getOutputStream());
                 Utils.print("Chaser is connected.");
-                sendToChaser(MessageType.TEXT, "Welcome. Please wait.");
-                new ServerConnectionThread(chaser).start();
+                sendToChaser(MessageType.TEXT, "Welcome. Please wait. You are the chaser.");
+                new ServerDataReceiveThread(chaser, true).start();
             } else {
                 player = ss.accept();
                 playerStream = new DataOutputStream(player.getOutputStream());
                 Utils.print("Player is connected.");
-                sendToPlayer(MessageType.TEXT, "Welcome. Please wait.");
-                new ServerConnectionThread(player).start();
+                sendToPlayer(MessageType.TEXT, "Welcome. Please wait. You are the player.");
+                new ServerDataReceiveThread(player, false).start();
             }
         }
 
@@ -40,10 +44,11 @@ public class Server {
     }
 
     public static void start() {
-
+        currentRound = new GameRound(new QuestionData("Example Question", "Option A", "Option B", "Option C"));
+        currentRound.sendQuestion();
     }
 
-    private static void sendToChaser(MessageType type, String message) {
+    public static void sendToChaser(MessageType type, String message) {
         try {
             chaserStream.writeInt(type.id);
             chaserStream.writeUTF(message);
@@ -53,7 +58,7 @@ public class Server {
         }
     }
 
-    private static void sendToPlayer(MessageType type, String message) {
+    public static void sendToPlayer(MessageType type, String message) {
         try {
             playerStream.writeInt(type.id);
             playerStream.writeUTF(message);
@@ -63,7 +68,7 @@ public class Server {
         }
     }
 
-    private static void sendToAll(MessageType type, String message) {
+    public static void sendToAll(MessageType type, String message) {
         sendToChaser(type, message);
         sendToPlayer(type, message);
     }
