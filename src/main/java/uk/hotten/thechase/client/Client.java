@@ -23,6 +23,7 @@ public class Client {
             Utils.print("Loading client and connecting to server...");
             socket = new Socket("127.0.0.1", 17777);
             Utils.print("Connected.");
+            Utils.print("Additional Commands:\n Leave: Disconnects You From The Server\n Rules: Shows you the ruleset for the game.\n Help: Guidance on how to play."); //\n makes spaces, just the commands for helping the player out
 
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream stream = new DataInputStream(socket.getInputStream());
