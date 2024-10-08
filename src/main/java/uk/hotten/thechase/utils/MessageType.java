@@ -13,7 +13,8 @@ public enum MessageType {
     PLAYER_ANSWERED(5),   // Server informs client a player has answered
     TIMER(6),             // Server sending timer countdown
     QUESTION_STOP(7),     // Server sends to prevent question answering
-    RESULTS_SEND(8);      // Server sends the results for the clients to show
+    RESULTS_SEND(8),      // Server sends the results for the clients to show
+    DISCONNECT(9);         // Disconnects the client from the server
 
 
     public int id;
