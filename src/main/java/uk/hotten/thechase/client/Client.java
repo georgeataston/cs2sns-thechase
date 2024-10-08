@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Optional;
+import java.util.Scanner;
 
 import static uk.hotten.thechase.TheChase.gson;
 
@@ -67,6 +68,29 @@ public class Client {
             dataOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    public static void quitServer() {
+        Scanner command1 = new Scanner(System.in);
+        String command = command1.nextLine();
+
+        //private boolean gameIdle = true;
+
+        //while gameIdle = True;
+        if (command.equalsIgnoreCase("Leave")) {
+            Utils.print("Testing"); //When the functionality to respond is implemented, it'll respond with Testing when Leave is typed
+            //gameIdle = false;
+        } else if (command.equalsIgnoreCase("Play")) {
+            Utils.print("You have" + "PLACEHOLDER" + "seconds remaining.\nYou can type 'Stop' to go back");
+            //sendToServer(MessageType.TEXT, "Player Has Joined, counting down...");
+            sendToServer(MessageType.TIMER, ""); //Probably going to have it so that it
+            //if (command.equalsIgnoreCase("Stop")) {
+                //Utils.print("Aborting Start...");
+                //sendToServer(MessageType.TEXT, "Player Has Cancelled");
+                //gameIdle = false;
+            //}
+        } else {
+            Utils.print("Unknown command. \nAvailable Commands:\nPlay: Start the game\nLeave: Disconnects You From The Server\nHelp: Gives you guidance on how to play");
         }
     }
 }
