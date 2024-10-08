@@ -39,6 +39,14 @@ public class ServerDataReceiveThread extends Thread {
                         else
                             Server.currentRound.playerIsReady();
                     }
+                    case DISCONNECT -> {
+                        Utils.print("Chaser has disconnected.");
+                        if(chaser) {
+                            Server.disconnectChaser();
+                            Utils.print("HALLO!!!!");
+                        }
+                        Utils.print("Chaser has disconnected.");
+                    }
 
                     default -> {
                         Utils.print("NYIMPL: " + data);
