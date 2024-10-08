@@ -32,6 +32,11 @@ public class Client {
                 String input = scanner.nextLine();
 
                 Utils.print(input);
+
+                if (input.equalsIgnoreCase("leave")) {
+                    Utils.print("Disconnecting...");
+                    sendToServer(MessageType.DISCONNECT, "");
+                }
             }
         } catch (Exception e) {
             Utils.print("Connection failure: " + e.getMessage());
