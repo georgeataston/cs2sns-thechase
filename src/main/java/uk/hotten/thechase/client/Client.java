@@ -1,18 +1,13 @@
 package uk.hotten.thechase.client;
 
-import jdk.jshell.execution.Util;
 import uk.hotten.thechase.utils.MessageType;
 import uk.hotten.thechase.utils.Utils;
 import uk.hotten.thechase.utils.QuestionData;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Optional;
 import java.util.Scanner;
-
-import static uk.hotten.thechase.TheChase.gson;
 
 public class Client {
 
