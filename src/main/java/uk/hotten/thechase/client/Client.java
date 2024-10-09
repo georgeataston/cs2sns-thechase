@@ -7,6 +7,8 @@ import uk.hotten.thechase.utils.QuestionData;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Client {
@@ -24,7 +26,7 @@ public class Client {
             socket = new Socket("127.0.0.1", 17777);
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             Utils.print("Connected.");
-            Utils.print("Additional Commands:\n Leave: Disconnects You From The Server\n Rules: Shows you the ruleset for the game.\n Help: Guidance on how to play.\n"); //\n makes spaces, just the commands for helping the player out
+            Utils.print("Type 'Commands' for additional functionality or help.");
             new ClientDataReceiveThread(socket).start();
 
             while (running) {
@@ -43,11 +45,24 @@ public class Client {
                     return;
                 }
 
-                if (input.equalsIgnoreCase("leave")) {
+                if (input.equalsIgnoreCase("Leave")) {
                     Utils.print("Disconnecting...");
                     sendToServer(MessageType.DISCONNECT, "");
                     socket.close();
+                    Utils.print("You've left the game, goodbye!");
                     running = false;
+                }
+                else if (input.equalsIgnoreCase("Rules")) {
+                    Utils.print("To play the game, you will be given questions\nEach question will have a corresponding letter (E.G A: Bananas)\nTo lock in your answer, you can type 'A' but once you choose, your answer is locked in\nYou have a time limit to answer the question, you will be told if you got the answer right or wrong.");
+                }
+                else if (input.equalsIgnoreCase("Help")) {
+                    Utils.print("If you cannot type nor connect, please restart your terminal.");
+                }
+                else if (input.equalsIgnoreCase("Commands")) {
+                    Utils.print("Additional Commands:\nLeave: Disconnects You From The Server\nRules: Shows you the ruleset for the game.\nHelp: If it isn't working.\nCommands: This current command"); //\n makes spaces, just the commands for helping the player out
+                }
+                else {
+                    Utils.print("That command wasn't recognised, please try again\n(Check your spelling!)\nYou can use 'Commands' for a list of available comands");
                 }
             }
         } catch (Exception e) {
@@ -80,9 +95,9 @@ public class Client {
             //sendToServer(MessageType.TEXT, "Player Has Joined, counting down...");
             //sendToServer(MessageType.TIMER, ""); //Probably going to have it so that it
             //if (command.equalsIgnoreCase("Stop")) {
-                //Utils.print("Aborting Start...");
-                //sendToServer(MessageType.TEXT, "Player Has Cancelled");
-                //gameIdle = false;
+            //Utils.print("Aborting Start...");
+            //sendToServer(MessageType.TEXT, "Player Has Cancelled");
+            //gameIdle = false;
             //}
         } else {
             Utils.print("Unknown command. \nAvailable Commands:\nPlay: Start the game\nLeave: Disconnects You From The Server\nHelp: Gives you guidance on how to play");
