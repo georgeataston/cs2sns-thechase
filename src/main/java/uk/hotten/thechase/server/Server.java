@@ -29,12 +29,14 @@ public class Server {
                 chaser = ss.accept();
                 chaserStream = new DataOutputStream(chaser.getOutputStream());
                 Utils.print("Chaser is connected.");
+                sendToChaser(MessageType.ROLE_DESIGNATION, "chaser");
                 sendToChaser(MessageType.TEXT, "Welcome. Please wait. You are the chaser.");
                 new ServerDataReceiveThread(chaser, true).start();
             } else {
                 player = ss.accept();
                 playerStream = new DataOutputStream(player.getOutputStream());
                 Utils.print("Player is connected.");
+                sendToPlayer(MessageType.ROLE_DESIGNATION, "player");
                 sendToPlayer(MessageType.TEXT, "Welcome. Please wait. You are the player.");
                 new ServerDataReceiveThread(player, false).start();
             }

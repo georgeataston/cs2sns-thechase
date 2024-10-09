@@ -40,6 +40,21 @@ public class ServerDataReceiveThread extends Thread {
                         else
                             Server.currentRound.playerIsReady();
                     }
+
+                    case PLAYER_ANSWER -> {
+                        if (chaser) {
+                            Server.sendToAll(MessageType.PLAYER_ANSWERED, "chaser");
+                            Server.currentRound.chaserAnswer = data.charAt(0);
+                            Utils.print("Chaser has answered " + data);
+                        } else {
+                            Server.sendToAll(MessageType.PLAYER_ANSWERED, "player");
+                            Server.currentRound.playerAnswer = data.charAt(0);
+                            Utils.print("Player has answered " + data);
+                        }
+
+                        Server.currentRound.checkAndRunTimer();
+                    }
+
                     case DISCONNECT -> {
                         if (chaser) {
                             Server.disconnectChaser();
