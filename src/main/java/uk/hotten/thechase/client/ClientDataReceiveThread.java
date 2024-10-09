@@ -24,7 +24,7 @@ public class ClientDataReceiveThread extends Thread {
         DataInputStream stream;
         try {
             stream = new DataInputStream(socket.getInputStream());
-            while (true) {
+            while (Client.running) {
                 int typeId = stream.readInt();
                 String data = stream.readUTF();
                 Optional<MessageType> type = MessageType.valueOf(typeId);

@@ -72,12 +72,22 @@ public class Server {
         sendToChaser(type, message);
         sendToPlayer(type, message);
     }
+
     public static void disconnectChaser() {
         try {
-            Utils.print("Chaser has disconnected.");
             chaser.close();
+            chaser = null;
         } catch (IOException e) {
-            Utils.print("Chaser has disconnected.");
+            Utils.print("Disconnect error: " + e.getMessage());
+        }
+    }
+
+    public static void disconnectPlayer() {
+        try {
+            player.close();
+            player = null;
+        } catch (IOException e) {
+            Utils.print("Disconnect error: " + e.getMessage());
         }
     }
 }

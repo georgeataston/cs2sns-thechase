@@ -18,16 +18,18 @@ public class Client {
     private static Socket socket;
     private static DataOutputStream dataOutputStream;
     public static QuestionData question;
+    public static boolean running = true;
 
     public static void main(String[] args) {
         try {
             Utils.print("Loading client and connecting to server...");
             socket = new Socket("127.0.0.1", 17777);
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
             Utils.print("Connected.");
             Utils.print("Additional Commands:\n Leave: Disconnects You From The Server\n Rules: Shows you the ruleset for the game.\n Help: Guidance on how to play.\n"); //\n makes spaces, just the commands for helping the player out
             new ClientDataReceiveThread(socket).start();
 
-            while (true) {
+            while (running) {
                 Scanner scanner = new Scanner(System.in);
                 String input = scanner.nextLine();
 
@@ -36,6 +38,8 @@ public class Client {
                 if (input.equalsIgnoreCase("leave")) {
                     Utils.print("Disconnecting...");
                     sendToServer(MessageType.DISCONNECT, "");
+                    socket.close();
+                    running = false;
                 }
             }
         } catch (Exception e) {
