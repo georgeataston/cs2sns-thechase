@@ -4,15 +4,10 @@ import uk.hotten.thechase.utils.MessageType;
 import uk.hotten.thechase.utils.Utils;
 import uk.hotten.thechase.utils.QuestionData;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.Scanner;
-
-import static uk.hotten.thechase.TheChase.gson;
 
 public class Client {
 
@@ -20,6 +15,8 @@ public class Client {
     private static DataOutputStream dataOutputStream;
     public static QuestionData question;
     public static boolean running = true;
+    public static boolean allowQuestionInput = false;
+    public static boolean chaser;
 
     public static void main(String[] args) {
         try {
@@ -34,7 +31,17 @@ public class Client {
                 Scanner scanner = new Scanner(System.in);
                 String input = scanner.nextLine();
 
-                Utils.print(input);
+                if (allowQuestionInput) {
+                    if (input.equalsIgnoreCase("a") || input.equalsIgnoreCase("b") || input.equalsIgnoreCase("c")) {
+                        sendToServer(MessageType.PLAYER_ANSWER, input);
+                        allowQuestionInput = false;
+                        Utils.print("Answer locked in!");
+                    } else {
+                        Utils.print("Please choose either: A, B, or C and press ENTER!");
+                    }
+
+                    return;
+                }
 
                 if (input.equalsIgnoreCase("Leave")) {
                     Utils.print("Disconnecting...");
@@ -70,6 +77,7 @@ public class Client {
             e.printStackTrace();
         }
     }
+
     public static void quitServer() {
         Scanner command1 = new Scanner(System.in);
         String command = command1.nextLine();
@@ -83,7 +91,7 @@ public class Client {
         } else if (command.equalsIgnoreCase("Play")) {
             Utils.print("You have" + "PLACEHOLDER" + "seconds remaining.\nYou can type 'Stop' to go back");
             //sendToServer(MessageType.TEXT, "Player Has Joined, counting down...");
-            sendToServer(MessageType.TIMER, ""); //Probably going to have it so that it
+            //sendToServer(MessageType.TIMER, ""); //Probably going to have it so that it
             //if (command.equalsIgnoreCase("Stop")) {
             //Utils.print("Aborting Start...");
             //sendToServer(MessageType.TEXT, "Player Has Cancelled");
