@@ -7,8 +7,6 @@ import uk.hotten.thechase.utils.QuestionData;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class Client {
