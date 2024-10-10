@@ -46,7 +46,7 @@ public class Server {
     }
 
     public static void start() {
-        currentRound = new GameRound(new QuestionData("Example Question", "Option A", "Option B", "Option C"));
+        currentRound = new GameRound(new QuestionData("Example Question", "Option A", "Option B", "Option C", 'b'));
         currentRound.sendQuestion();
     }
 

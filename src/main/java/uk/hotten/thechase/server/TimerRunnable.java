@@ -33,6 +33,6 @@ public class TimerRunnable implements Runnable {
 
         Server.sendToAll(MessageType.QUESTION_STOP, "");
         Server.sendToAll(MessageType.TIMER_OUTOFTIME, "");
-
+        Server.currentRound.progressToResults();
     }
 }

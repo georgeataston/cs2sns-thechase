@@ -4,8 +4,10 @@ import uk.hotten.thechase.utils.MessageType;
 import uk.hotten.thechase.utils.Utils;
 import uk.hotten.thechase.utils.QuestionData;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -28,8 +30,8 @@ public class Client {
             new ClientDataReceiveThread(socket).start();
 
             while (running) {
-                Scanner scanner = new Scanner(System.in);
-                String input = scanner.nextLine();
+                BufferedReader reader = new BufferedReader( new InputStreamReader(System.in) );
+                String input = reader.readLine();
 
                 if (allowQuestionInput) {
                     if (input.equalsIgnoreCase("a") || input.equalsIgnoreCase("b") || input.equalsIgnoreCase("c")) {
@@ -40,7 +42,7 @@ public class Client {
                         Utils.print("Please choose either: A, B, or C and press ENTER!");
                     }
 
-                    return;
+                    continue;
                 }
 
                 if (input.equalsIgnoreCase("Leave")) {

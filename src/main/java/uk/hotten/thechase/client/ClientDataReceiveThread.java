@@ -98,6 +98,18 @@ public class ClientDataReceiveThread extends Thread {
                         Client.allowQuestionInput = false;
                     }
 
+                    case RESULTS_PLAYER -> {
+                        SFXPlayer.playerAnswer();
+                    }
+
+                    case RESULTS_CORRECT -> {
+                        SFXPlayer.gameCorrectAnswer();
+                    }
+
+                    case RESULTS_CHASER -> {
+                        SFXPlayer.chaserAnswer();
+                    }
+
                     default -> {
                         Utils.print("NYIPML: " + data);
                     }

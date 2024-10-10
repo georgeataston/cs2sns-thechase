@@ -40,6 +40,16 @@ public class SFXPlayer {
         return play("chaser-answer.wav");
     }
 
+    public static Clip playerWin() {
+        return play("player-win.wav");
+    }
+
+
+    public static Clip playerLoose() {
+        return play("player-loose.wav");
+    }
+
+
 
     private static Clip play(String file) {
         try {
