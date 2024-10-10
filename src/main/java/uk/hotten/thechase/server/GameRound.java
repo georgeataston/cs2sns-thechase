@@ -14,6 +14,7 @@ public class GameRound {
     private volatile boolean questionSent = false;
     private volatile boolean timerRunning = false;
     private volatile TimerRunnable timerRunnable;
+    private volatile boolean resultsStarted = false;
 
     public volatile char chaserAnswer = 'Z';
     public volatile char playerAnswer = 'Z';
@@ -52,6 +53,7 @@ public class GameRound {
                 Server.sendToAll(MessageType.TIMER_STOP, "");
                 Server.sendToAll(MessageType.QUESTION_STOP, "");
                 timerRunning = false;
+                progressToResults();
             }
 
             return;
@@ -61,6 +63,15 @@ public class GameRound {
         Server.sendToAll(MessageType.TIMER_START, "");
         timerRunnable = new TimerRunnable();
         timerRunnable.run();
+    }
+
+    public synchronized void progressToResults() {
+        if (resultsStarted)
+            return;
+
+        resultsStarted = true;
+
+        new ResultsRunnable().run();
     }
 
 }

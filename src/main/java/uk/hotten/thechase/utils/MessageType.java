@@ -15,9 +15,12 @@ public enum MessageType {
     TIMER_STOP(7),        // Informs client to stop playing the timer music
     TIMER_OUTOFTIME(8),   // Tells the client the timer has timed out
     QUESTION_STOP(9),     // Server sends to prevent question answering
-    RESULTS_SEND(10),     // Server sends the results for the clients to show
-    DISCONNECT(11),       // Disconnects the client from the server
-    ROLE_DESIGNATION(12); // Lets the client know what they are
+    RESULTS_PLAYER(10),   // Plays the player answer sfx
+    RESULTS_CORRECT(11),  // Plays the correct answer sfx
+    RESULTS_CHASER(12),   // Plays the chaser answer sfx
+    DISCONNECT(13),       // Disconnects the client from the server
+    ROLE_DESIGNATION(14), // Lets the client know what they are
+    PLAYER_WIN(15);       // End the game
 
     public int id;
 

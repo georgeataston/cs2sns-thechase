@@ -13,9 +13,11 @@ public class Server {
 
     private static Socket chaser;
     private static DataOutputStream chaserStream;
+    public static int chaserScore = 0;
 
     private static Socket player;
     private static DataOutputStream playerStream;
+    public static int playerScore = 0;
 
     public static GameRound currentRound;
 
@@ -46,7 +48,7 @@ public class Server {
     }
 
     public static void start() {
-        currentRound = new GameRound(new QuestionData("Example Question", "Option A", "Option B", "Option C"));
+        currentRound = new GameRound(new QuestionData("Example Question", "Option A", "Option B", "Option C", 'b'));
         currentRound.sendQuestion();
     }
 

@@ -65,10 +65,16 @@ public class ClientDataReceiveThread extends Thread {
                         else if (data.equalsIgnoreCase("chaser"))
                             SFXPlayer.chaserLockIn();
 
-                        if (Client.chaser && data.equalsIgnoreCase("player")) {
-                            Utils.print("The player has answered!");
-                        } else if (!Client.chaser && data.equalsIgnoreCase("chaser")) {
-                            Utils.print("The chaser has answered!");
+                        if (Client.chaser) {
+                            if (data.equalsIgnoreCase("player"))
+                                Utils.print("The player has answered!");
+                            else if (timer == null)
+                                Utils.print("The player has 5 seconds to answer.");
+                        } else {
+                            if (data.equalsIgnoreCase("chaser"))
+                                Utils.print("The chaser has answered!");
+                            else if (timer == null)
+                                Utils.print("The chaser has 5 seconds to answer.");
                         }
                     }
 
@@ -77,17 +83,45 @@ public class ClientDataReceiveThread extends Thread {
                     }
 
                     case TIMER_STOP -> {
-                        if (timer != null)
+                        if (timer != null) {
                             timer.stop();
+                            timer = null;
+                        }
                     }
 
                     case TIMER_OUTOFTIME -> {
-                        SFXPlayer.chaserOutOfTime();
+                        SFXPlayer.gameOutOfTime();
                         Utils.print("OUT OF TIME!");
                     }
 
                     case QUESTION_STOP -> {
                         Client.allowQuestionInput = false;
+                    }
+
+                    case RESULTS_PLAYER -> {
+                        SFXPlayer.playerAnswer();
+                    }
+
+                    case RESULTS_CORRECT -> {
+                        SFXPlayer.gameCorrectAnswer();
+                    }
+
+                    case RESULTS_CHASER -> {
+                        SFXPlayer.chaserAnswer();
+                    }
+
+                    case PLAYER_WIN -> {
+                        if (Client.chaser) {
+                            if (data.equalsIgnoreCase("chaser"))
+                                SFXPlayer.playerWin();
+                            else if (data.equalsIgnoreCase("player"))
+                                SFXPlayer.playerLoose();
+                        } else {
+                            if (data.equalsIgnoreCase("chaser"))
+                                SFXPlayer.playerLoose();
+                            else if (data.equalsIgnoreCase("player"))
+                                SFXPlayer.playerWin();
+                        }
                     }
 
                     default -> {
