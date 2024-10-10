@@ -65,10 +65,16 @@ public class ClientDataReceiveThread extends Thread {
                         else if (data.equalsIgnoreCase("chaser"))
                             SFXPlayer.chaserLockIn();
 
-                        if (Client.chaser && data.equalsIgnoreCase("player")) {
-                            Utils.print("The player has answered!");
-                        } else if (!Client.chaser && data.equalsIgnoreCase("chaser")) {
-                            Utils.print("The chaser has answered!");
+                        if (Client.chaser) {
+                            if (data.equalsIgnoreCase("player"))
+                                Utils.print("The player has answered!");
+                            else if (timer == null)
+                                Utils.print("The player has 5 seconds to answer.");
+                        } else {
+                            if (data.equalsIgnoreCase("chaser"))
+                                Utils.print("The chaser has answered!");
+                            else if (timer == null)
+                                Utils.print("The chaser has 5 seconds to answer.");
                         }
                     }
 
@@ -77,12 +83,14 @@ public class ClientDataReceiveThread extends Thread {
                     }
 
                     case TIMER_STOP -> {
-                        if (timer != null)
+                        if (timer != null) {
                             timer.stop();
+                            timer = null;
+                        }
                     }
 
                     case TIMER_OUTOFTIME -> {
-                        SFXPlayer.chaserOutOfTime();
+                        SFXPlayer.gameOutOfTime();
                         Utils.print("OUT OF TIME!");
                     }
 

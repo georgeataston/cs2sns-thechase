@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerRunnable implements Runnable {
 
-    private int timeRemaining = 6;
+    private int timeRemaining = 5;
 
     @Override
     public void run() {
@@ -15,8 +15,11 @@ public class TimerRunnable implements Runnable {
                 if (Server.currentRound.playerAnswer != 'Z' && Server.currentRound.chaserAnswer != 'Z')
                     return;
 
-                if (timeRemaining != 6)
-                    Server.sendToAll(MessageType.TEXT, "TIME LEFT TO ANSWER: " + timeRemaining + "s");
+                if (Server.currentRound.playerAnswer == 'Z')
+                    Server.sendToPlayer(MessageType.TEXT, "TIME LEFT TO ANSWER: " + timeRemaining + "s");
+
+                if (Server.currentRound.chaserAnswer == 'Z')
+                    Server.sendToChaser(MessageType.TEXT, "TIME LEFT TO ANSWER: " + timeRemaining + "s");
 
                 TimeUnit.SECONDS.sleep(1);
                 timeRemaining--;

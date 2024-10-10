@@ -24,8 +24,8 @@ public class SFXPlayer {
         return play("chaser-lockin.wav");
     }
 
-    public static Clip chaserOutOfTime() {
-        return play("chaser-outoftime.wav");
+    public static Clip gameOutOfTime() {
+        return play("game-outoftime.wav");
     }
 
     public static Clip gameCorrectAnswer() {
