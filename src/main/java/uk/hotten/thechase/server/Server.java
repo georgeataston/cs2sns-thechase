@@ -13,9 +13,11 @@ public class Server {
 
     private static Socket chaser;
     private static DataOutputStream chaserStream;
+    public static int chaserScore = 0;
 
     private static Socket player;
     private static DataOutputStream playerStream;
+    public static int playerScore = 0;
 
     public static GameRound currentRound;
 

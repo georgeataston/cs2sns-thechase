@@ -42,6 +42,40 @@ public class ResultsRunnable implements Runnable {
                 Server.sendToAll(MessageType.TEXT, String.valueOf(chaserAnswer).toUpperCase() + ") " + Server.currentRound.question.getAnswerFromChar(chaserAnswer));
             }
 
+            if (playerAnswer == correctAnswer)
+                Server.playerScore++;
+            if (chaserAnswer == correctAnswer)
+                Server.chaserScore++;
+
+            if (Server.chaserScore >= 3 && Server.playerScore >= 3) {
+                if (Server.playerScore > Server.chaserScore) {
+                    Server.sendToAll(MessageType.PLAYER_WIN, "player");
+                    Server.sendToAll(MessageType.TEXT, "GAME OVER! The player wins " + Server.playerScore + "-" + Server.chaserScore);
+                    return;
+                } else if (Server.chaserScore > Server.playerScore) {
+                    Server.sendToAll(MessageType.PLAYER_WIN, "chaser");
+                    Server.sendToAll(MessageType.TEXT, "GAME OVER! The chaser wins " + Server.chaserScore + "-" + Server.playerScore);
+                    return;
+                }
+            } else {
+                if (Server.playerScore == 3) {
+                    Server.sendToAll(MessageType.PLAYER_WIN, "player");
+                    Server.sendToAll(MessageType.TEXT, "GAME OVER! The player wins " + Server.playerScore + "-" + Server.chaserScore);
+                    return;
+                } else if (Server.chaserScore == 3) {
+                    Server.sendToAll(MessageType.PLAYER_WIN, "chaser");
+                    Server.sendToAll(MessageType.TEXT, "GAME OVER! The chaser wins " + Server.chaserScore + "-" + Server.playerScore);
+                    return;
+                }
+            }
+
+            TimeUnit.SECONDS.sleep(3);
+            Server.sendToAll(MessageType.TEXT, "The scores are now: ");
+            Server.sendToAll(MessageType.TEXT, "Player: " + Server.playerScore);
+            Server.sendToAll(MessageType.TEXT, "Chaser: " + Server.chaserScore);
+            Server.sendToAll(MessageType.TEXT, "Your next question will come in 5 seconds...");
+            TimeUnit.SECONDS.sleep(5);
+            Server.start();
         } catch (Exception e) {
             e.printStackTrace();
         }

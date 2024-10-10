@@ -19,7 +19,8 @@ public enum MessageType {
     RESULTS_CORRECT(11),  // Plays the correct answer sfx
     RESULTS_CHASER(12),   // Plays the chaser answer sfx
     DISCONNECT(13),       // Disconnects the client from the server
-    ROLE_DESIGNATION(14); // Lets the client know what they are
+    ROLE_DESIGNATION(14), // Lets the client know what they are
+    PLAYER_WIN(15);       // End the game
 
     public int id;
 

@@ -110,6 +110,20 @@ public class ClientDataReceiveThread extends Thread {
                         SFXPlayer.chaserAnswer();
                     }
 
+                    case PLAYER_WIN -> {
+                        if (Client.chaser) {
+                            if (data.equalsIgnoreCase("chaser"))
+                                SFXPlayer.playerWin();
+                            else if (data.equalsIgnoreCase("player"))
+                                SFXPlayer.playerLoose();
+                        } else {
+                            if (data.equalsIgnoreCase("chaser"))
+                                SFXPlayer.playerLoose();
+                            else if (data.equalsIgnoreCase("player"))
+                                SFXPlayer.playerWin();
+                        }
+                    }
+
                     default -> {
                         Utils.print("NYIPML: " + data);
                     }
