@@ -4,54 +4,65 @@ import uk.hotten.thechase.utils.MessageType;
 import uk.hotten.thechase.utils.Utils;
 import uk.hotten.thechase.utils.QuestionData;
 
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Optional;
-
-import static uk.hotten.thechase.TheChase.gson;
+import java.util.Scanner;
 
 public class Client {
 
     private static Socket socket;
     private static DataOutputStream dataOutputStream;
-    private static QuestionData question;
+    public static QuestionData question;
+    public static boolean running = true;
+    public static boolean allowQuestionInput = false;
+    public static boolean chaser;
 
     public static void main(String[] args) {
         try {
             Utils.print("Loading client and connecting to server...");
             socket = new Socket("127.0.0.1", 17777);
-            Utils.print("Connected.");
-
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            DataInputStream stream = new DataInputStream(socket.getInputStream());
-            while (true) {
-                int typeId = stream.readInt();
-                String data = stream.readUTF();
-                Optional<MessageType> type = MessageType.valueOf(typeId);
-                if (type.isEmpty()) {
-                    Utils.print("Received message without a valid type: " + data);
-                    return;
+            Utils.print("Connected.");
+            Utils.print("Type 'Commands' for additional functionality or help.");
+            new ClientDataReceiveThread(socket).start();
+
+            while (running) {
+                BufferedReader reader = new BufferedReader( new InputStreamReader(System.in) );
+                String input = reader.readLine();
+
+                if (allowQuestionInput) {
+                    if (input.equalsIgnoreCase("a") || input.equalsIgnoreCase("b") || input.equalsIgnoreCase("c")) {
+                        sendToServer(MessageType.PLAYER_ANSWER, input);
+                        allowQuestionInput = false;
+                        Utils.print("Answer locked in!");
+                    } else {
+                        Utils.print("Please choose either: A, B, or C and press ENTER!");
+                    }
+
+                    continue;
                 }
 
-                switch (type.get()) {
-                    case TEXT -> {
-                        Utils.print(data);
-                    }
-
-                    case QUESTION_SEND -> {
-                        question = gson.fromJson(data, QuestionData.class);
-                        sendToServer(MessageType.QUESTION_RECEIVE, "");
-                    }
-
-                    case QUESTION_START -> {
-                        Utils.print(question.getQuestion());
-                    }
-
-                    default -> {
-                        Utils.print("NYIPML: " + data);
-                    }
+                if (input.equalsIgnoreCase("Leave")) {
+                    Utils.print("Disconnecting...");
+                    sendToServer(MessageType.DISCONNECT, "");
+                    socket.close();
+                    Utils.print("You've left the game, goodbye!");
+                    running = false;
+                }
+                else if (input.equalsIgnoreCase("Rules")) {
+                    Utils.print("To play the game, you will be given questions\nEach question will have a corresponding letter (E.G A: Bananas)\nTo lock in your answer, you can type 'A' but once you choose, your answer is locked in\nYou have a time limit to answer the question, you will be told if you got the answer right or wrong.");
+                }
+                else if (input.equalsIgnoreCase("Help")) {
+                    Utils.print("If you cannot type nor connect, please restart your terminal.");
+                }
+                else if (input.equalsIgnoreCase("Commands")) {
+                    Utils.print("Additional Commands:\nLeave: Disconnects You From The Server\nRules: Shows you the ruleset for the game.\nHelp: If it isn't working.\nCommands: This current command"); //\n makes spaces, just the commands for helping the player out
+                }
+                else {
+                    Utils.print("That command wasn't recognised, please try again\n(Check your spelling!)\nYou can use 'Commands' for a list of available comands");
                 }
             }
         } catch (Exception e) {
@@ -59,13 +70,37 @@ public class Client {
         }
     }
 
-    private static void sendToServer(MessageType type, String message) {
+    public static void sendToServer(MessageType type, String message) {
         try {
             dataOutputStream.writeInt(type.id);
             dataOutputStream.writeUTF(message);
             dataOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void quitServer() {
+        Scanner command1 = new Scanner(System.in);
+        String command = command1.nextLine();
+
+        //private boolean gameIdle = true;
+
+        //while gameIdle = True;
+        if (command.equalsIgnoreCase("Leave")) {
+            Utils.print("Testing"); //When the functionality to respond is implemented, it'll respond with Testing when Leave is typed
+            //gameIdle = false;
+        } else if (command.equalsIgnoreCase("Play")) {
+            Utils.print("You have" + "PLACEHOLDER" + "seconds remaining.\nYou can type 'Stop' to go back");
+            //sendToServer(MessageType.TEXT, "Player Has Joined, counting down...");
+            //sendToServer(MessageType.TIMER, ""); //Probably going to have it so that it
+            //if (command.equalsIgnoreCase("Stop")) {
+            //Utils.print("Aborting Start...");
+            //sendToServer(MessageType.TEXT, "Player Has Cancelled");
+            //gameIdle = false;
+            //}
+        } else {
+            Utils.print("Unknown command. \nAvailable Commands:\nPlay: Start the game\nLeave: Disconnects You From The Server\nHelp: Gives you guidance on how to play");
         }
     }
 }

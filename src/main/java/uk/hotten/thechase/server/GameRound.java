@@ -12,9 +12,12 @@ public class GameRound {
     private boolean chaserReady = false;
     private boolean playerReady = false;
     private volatile boolean questionSent = false;
+    private volatile boolean timerRunning = false;
+    private volatile TimerRunnable timerRunnable;
+    private volatile boolean resultsStarted = false;
 
-    private char chaserAnswer = 'Z';
-    private char playerAnswer = 'Z';
+    public volatile char chaserAnswer = 'Z';
+    public volatile char playerAnswer = 'Z';
 
     public GameRound(QuestionData question) {
         this.question = question;
@@ -42,6 +45,33 @@ public class GameRound {
         Utils.print("Clients are ready, showing question.");
         Server.sendToAll(MessageType.QUESTION_START, "");
         questionSent = true;
+    }
+
+    public synchronized void checkAndRunTimer() {
+        if (timerRunning) {
+            if (chaserAnswer != 'Z' && playerAnswer != 'Z') {
+                Server.sendToAll(MessageType.TIMER_STOP, "");
+                Server.sendToAll(MessageType.QUESTION_STOP, "");
+                timerRunning = false;
+                progressToResults();
+            }
+
+            return;
+        }
+
+        timerRunning = true;
+        Server.sendToAll(MessageType.TIMER_START, "");
+        timerRunnable = new TimerRunnable();
+        timerRunnable.run();
+    }
+
+    public synchronized void progressToResults() {
+        if (resultsStarted)
+            return;
+
+        resultsStarted = true;
+
+        new ResultsRunnable().run();
     }
 
 }

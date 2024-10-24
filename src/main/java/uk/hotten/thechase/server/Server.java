@@ -13,9 +13,11 @@ public class Server {
 
     private static Socket chaser;
     private static DataOutputStream chaserStream;
+    public static int chaserScore = 0;
 
     private static Socket player;
     private static DataOutputStream playerStream;
+    public static int playerScore = 0;
 
     public static GameRound currentRound;
 
@@ -29,12 +31,14 @@ public class Server {
                 chaser = ss.accept();
                 chaserStream = new DataOutputStream(chaser.getOutputStream());
                 Utils.print("Chaser is connected.");
+                sendToChaser(MessageType.ROLE_DESIGNATION, "chaser");
                 sendToChaser(MessageType.TEXT, "Welcome. Please wait. You are the chaser.");
                 new ServerDataReceiveThread(chaser, true).start();
             } else {
                 player = ss.accept();
                 playerStream = new DataOutputStream(player.getOutputStream());
                 Utils.print("Player is connected.");
+                sendToPlayer(MessageType.ROLE_DESIGNATION, "player");
                 sendToPlayer(MessageType.TEXT, "Welcome. Please wait. You are the player.");
                 new ServerDataReceiveThread(player, false).start();
             }
@@ -44,7 +48,7 @@ public class Server {
     }
 
     public static void start() {
-        currentRound = new GameRound(new QuestionData("Example Question", "Option A", "Option B", "Option C"));
+        currentRound = new GameRound(new QuestionData("Example Question", "Option A", "Option B", "Option C", 'b'));
         currentRound.sendQuestion();
     }
 
@@ -71,5 +75,23 @@ public class Server {
     public static void sendToAll(MessageType type, String message) {
         sendToChaser(type, message);
         sendToPlayer(type, message);
+    }
+
+    public static void disconnectChaser() {
+        try {
+            chaser.close();
+            chaser = null;
+        } catch (IOException e) {
+            Utils.print("Disconnect error: " + e.getMessage());
+        }
+    }
+
+    public static void disconnectPlayer() {
+        try {
+            player.close();
+            player = null;
+        } catch (IOException e) {
+            Utils.print("Disconnect error: " + e.getMessage());
+        }
     }
 }

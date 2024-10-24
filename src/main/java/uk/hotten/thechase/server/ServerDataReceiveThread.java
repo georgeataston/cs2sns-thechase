@@ -23,7 +23,8 @@ public class ServerDataReceiveThread extends Thread {
         DataInputStream stream;
         try {
             stream = new DataInputStream(socket.getInputStream());
-            while (true) {
+            boolean run = true;
+            while (run) {
                 int typeId = stream.readInt();
                 String data = stream.readUTF();
                 Optional<MessageType> type = MessageType.valueOf(typeId);
@@ -38,6 +39,31 @@ public class ServerDataReceiveThread extends Thread {
                             Server.currentRound.chaserIsReady();
                         else
                             Server.currentRound.playerIsReady();
+                    }
+
+                    case PLAYER_ANSWER -> {
+                        if (chaser) {
+                            Server.sendToAll(MessageType.PLAYER_ANSWERED, "chaser");
+                            Server.currentRound.chaserAnswer = data.charAt(0);
+                            Utils.print("Chaser has answered " + data);
+                        } else {
+                            Server.sendToAll(MessageType.PLAYER_ANSWERED, "player");
+                            Server.currentRound.playerAnswer = data.charAt(0);
+                            Utils.print("Player has answered " + data);
+                        }
+
+                        Server.currentRound.checkAndRunTimer();
+                    }
+
+                    case DISCONNECT -> {
+                        if (chaser) {
+                            Server.disconnectChaser();
+                            Utils.print("Chaser has quit.");
+                        } else {
+                            Server.disconnectPlayer();
+                            Utils.print("Player has quit.");
+                        }
+                        run = false;
                     }
 
                     default -> {
