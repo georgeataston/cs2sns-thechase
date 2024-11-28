@@ -4,6 +4,8 @@ import uk.hotten.thechase.utils.MessageType;
 import uk.hotten.thechase.utils.Utils;
 import uk.hotten.thechase.utils.QuestionData;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.util.Scanner;
 
 public class Client {
 
-    private static Socket socket;
+    private static SSLSocket socket;
     private static DataOutputStream dataOutputStream;
     public static QuestionData question;
     public static boolean running = true;
@@ -23,7 +25,13 @@ public class Client {
     public static void main(String[] args) {
         try {
             Utils.print("Loading client and connecting to server...");
-            socket = new Socket("127.0.0.1", 17777);
+            System.setProperty( "javax.net.ssl.trustStore", "C:\\cs2sns-thechase\\thechase.jks" );
+            System.setProperty( "javax.net.ssl.trustStorePassword", "hotten" );
+
+            SSLSocketFactory sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            socket = (SSLSocket) sslSocketFactory.createSocket("127.0.0.1", 17777);
+            socket.startHandshake();
+
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             Utils.print("Connected.");
             Utils.print("Type 'Commands' for additional functionality or help.");
@@ -66,6 +74,7 @@ public class Client {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             Utils.print("Connection failure: " + e.getMessage());
         }
     }

@@ -4,6 +4,8 @@ import uk.hotten.thechase.utils.MessageType;
 import uk.hotten.thechase.utils.Utils;
 import uk.hotten.thechase.utils.QuestionData;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -23,7 +25,13 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
         Utils.print("Starting server...");
-        ServerSocket ss = new ServerSocket(17777);
+        System.setProperty( "javax.net.ssl.keyStore", "C:\\cs2sns-thechase\\thechase.jks" );
+        System.setProperty( "javax.net.ssl.trustStore", "C:\\cs2sns-thechase\\thechase.jks" );
+        System.setProperty( "javax.net.ssl.keyStorePassword", "hotten" );
+
+        SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+        SSLServerSocket ss = (SSLServerSocket) sslServerSocketFactory.createServerSocket(17777);
+        ss.setEnabledProtocols( new String[]{"TLSv1.3", "TLSv1.2"} );
 
         Utils.print("Awaiting connections.");
         while(chaser == null || player == null) {
